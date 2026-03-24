@@ -7,7 +7,7 @@ RUN apk update && apk add ca-certificates iptables iproute2 curl
 # Unduh dan ekstrak binary Tailscale statis
 WORKDIR /app
 # Mengunduh dan mengekstrak versi LATEST secara otomatis
-RUN curl -O https://pkgs.tailscale.com/stable/tailscale_latest_amd64.tgz && \
+RUN curl -L -O https://pkgs.tailscale.com/stable/tailscale_latest_amd64.tgz && \
     tar xzf tailscale_latest_amd64.tgz --strip-components=1 && \
     rm tailscale_latest_amd64.tgz
 
