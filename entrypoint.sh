@@ -1,18 +1,15 @@
 #!/bin/sh
 
-# Jalankan daemon Tailscale di background
-/app/tailscaled --tun=userspace-networking --socks5-server=localhost:1055 --outbound-http-proxy-listen=localhost:1056 &
+# 1. Jalankan mesin Tailscale di latar belakang
+/app/tailscaled --tun=userspace-networking --socks5-server=localhost:1055 &
 
-# Tunggu sebentar agar daemon siap
+# 2. Tunggu 3 detik agar mesin siap
 sleep 3
 
-# Cek apakah TS_AUTHKEY ada sebelum mencoba login
-if [ -z "${TS_AUTHKEY}" ]; then
-  echo "GAGAL: Variabel TS_AUTHKEY tidak ditemukan di Zeabur!"
-else
-  echo "Mencoba login ke Tailscale..."
-  /app/tailscale up --authkey=${TS_AUTHKEY} --hostname=zeabur-app
-fi
+# 3. Otentikasi dan iklankan sebagai Exit Node
+/app/tailscale up --authkey=${TS_AUTHKEY} --hostname=zeabur-vpn --advertise-exit-node
 
-echo "Memulai aplikasi utama..."
-exec "$@"
+echo "Tailscale VPN siap dan berjalan!"
+
+# 4. Tahan container agar terus hidup dan menjaga koneksi VPN
+tail -f /dev/null
